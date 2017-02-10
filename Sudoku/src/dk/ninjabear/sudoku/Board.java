@@ -3,6 +3,10 @@ package dk.ninjabear.sudoku;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -10,8 +14,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class Board extends Pane {
-	public static final double WIDTH = 400;
-	public static final double MARGIN = 10;
 	private Cell[][] cells = new Cell[9][9];
 	private int highlighted = 0;
 	
@@ -24,8 +26,8 @@ public class Board extends Pane {
 	}
 	
 	public void drawThis() {
-		double m1 = MARGIN;
-		double m2 = WIDTH-m1;
+		double m1 = Settings.getMargin();
+		double m2 = Settings.getWidth()-m1;
 		List<Line> lines = new ArrayList<>();
 		lines.add(new Line(m1, m1, m2, m1));
 		lines.add(new Line(m1, m2, m2, m2));
@@ -34,23 +36,26 @@ public class Board extends Pane {
 		lines.add(new Line(m2, m1, m2, m2));
 		
 		for (Line line : lines) {
-			line.setStroke(Color.BLACK);
-			line.setStrokeWidth(2);;
+			line.setStroke(Settings.getLineColor());
+			line.setStrokeWidth(2);
 		}
 		
-		double d = (WIDTH - m1 * 2) / 9;
+		double d = (Settings.getWidth() - m1 * 2) / 9;
 		for (int y = 1; y < 9; y++) {
 
 			Line line = new Line(m1, m1+y*d, m2, m1+y*d);
+			line.setStroke(Settings.getLineColor());
 			if (y%3 == 0) line.setStrokeWidth(2);
 			lines.add(line);
 		}
 		for (int x = 1; x < 9; x++) {
 			Line line = new Line(m1+x*d, m1, m1+x*d, m2);
+			line.setStroke(Settings.getLineColor());
 			if (x%3 == 0) line.setStrokeWidth(2);
 			lines.add(line);
 		}
 		
+		this.setBackground(new Background(new BackgroundFill(Settings.getBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY)));
 		this.getChildren().addAll(lines);
 		
 		List<Text> texts = new ArrayList<>();
@@ -61,14 +66,15 @@ public class Board extends Pane {
 				if (cells[x][y].getValue() != 0) {
 					Text text = new Text(dx+12, dy+34, "" + cells[x][y].getValue());
 					text.setFont(Font.font(35));
-					if (cells[x][y].getValue() != highlighted && cells[x][y].getLocked())
-						text.setFill(Color.color(0.4,0.4,0.4));
-					else if (cells[x][y].getValue() == highlighted && !cells[x][y].getLocked())
-						text.setFill(Color.DARKRED);
-					else if (cells[x][y].getValue() == highlighted && cells[x][y].getLocked())
-						text.setFill(Color.RED);
 					
-						
+					if (cells[x][y].getValue() != highlighted && cells[x][y].getLocked())
+						text.setFill(Settings.getLocledNumberColor());
+					else if (cells[x][y].getValue() == highlighted && !cells[x][y].getLocked())
+						text.setFill(Settings.getHighlightedNumberColor());
+					else if (cells[x][y].getValue() == highlighted && cells[x][y].getLocked())
+						text.setFill(Settings.getHighlightedLocledNumberColor());
+					else
+						text.setFill(Settings.getNumberColor());
 					texts.add(text);
 				} else {
 					List<Integer> tempValues = cells[x][y].getTempValues();
@@ -78,7 +84,9 @@ public class Board extends Pane {
 						Text text = new Text(dx + tvX*d/3.7 + 4.5, dy + tvY*d/3.4 + 13, "" + n);
 						text.setFont(Font.font(13));
 						if (n == highlighted)
-							text.setFill(Color.DARKRED);
+							text.setFill(Settings.getHighlightedNumberColor());
+						else
+							text.setFill(Settings.getNumberColor());
 						texts.add(text);
 					}
 				}
@@ -87,8 +95,8 @@ public class Board extends Pane {
 	}
 	
 	public void playAt(double mouseX, double mouseY, int n) {
-		int x = (int)(9*(mouseX - MARGIN)/(WIDTH-2*MARGIN));
-		int y = (int)(9*(mouseY - MARGIN)/(WIDTH-2*MARGIN));
+		int x = (int)(9*(mouseX - Settings.getMargin())/(Settings.getWidth()-2*Settings.getMargin()));
+		int y = (int)(9*(mouseY - Settings.getMargin())/(Settings.getWidth()-2*Settings.getMargin()));
 		if (	-1 < x && x < 9 &&
 				-1 < y && y < 9) {
 			cells[x][y].setValue(n);
@@ -98,8 +106,8 @@ public class Board extends Pane {
 	}
 	
 	public void toggleTempValue(double mouseX, double mouseY, int n) {
-		int x = (int)(9*(mouseX - MARGIN)/(WIDTH-2*MARGIN));
-		int y = (int)(9*(mouseY - MARGIN)/(WIDTH-2*MARGIN));
+		int x = (int)(9*(mouseX - Settings.getMargin())/(Settings.getWidth()-2*Settings.getMargin()));
+		int y = (int)(9*(mouseY - Settings.getMargin())/(Settings.getWidth()-2*Settings.getMargin()));
 		if (	-1 < x && x < 9 &&
 				-1 < y && y < 9) {
 			if (cells[x][y].getTempValues().contains(new Integer(n)))
