@@ -2,14 +2,26 @@ package dk.ninjabear.sudoku;
 
 public class Test {
 	public static void initTestData(Cell[][] cells) {
-		cells[0][0].setValue(1);
-		cells[1][1].setValue(2);
-		cells[2][2].setValue(3);
-		cells[3][3].setValue(4);
-		cells[4][4].setValue(5);
-		cells[5][5].setValue(6);
-		cells[6][6].setValue(7);
-		cells[7][7].setValue(8);
-		cells[8][8].setValue(9);
+		
+		int[][] sudoku = {
+				{5,0,6,  0,2,0,  9,0,3},
+				{0,0,0,  0,0,0,  5,0,0},
+				{0,0,0,  0,0,0,  0,0,0},
+				
+				{6,0,0,  2,8,5,  0,0,9},
+				{0,0,0,  9,0,3,  0,0,0},
+				{8,0,0,  7,6,1,  0,0,4},
+				
+				{0,0,0,  0,0,0,  0,0,0},
+				{0,0,4,  0,0,0,  3,0,0},
+				{2,0,1,  0,5,0,  6,0,7}
+		};
+		
+		for (int x = 0; x < 9; x++)
+			for (int y = 0; y < 9; y++)
+				if (sudoku[x][y] != 0) {
+					cells[x][y].setValue(sudoku[x][y]);
+					cells[x][y].setLocked(true);
+				}
 	}
 }
