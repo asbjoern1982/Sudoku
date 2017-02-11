@@ -15,7 +15,7 @@ import javafx.scene.text.Text;
 public class Board extends Pane {
 	private Cell[][] cells = new Cell[9][9];
 	private int highlighted = 0;
-	
+
 	public Board() {
 		for (int x = 0; x < 9; x++)
 			for (int y = 0; y < 9; y++)
@@ -23,49 +23,52 @@ public class Board extends Pane {
 		Test.initTestData(cells);
 		drawThis();
 	}
-	
+
 	public void drawThis() {
 		double m1 = Settings.getMargin();
-		double m2 = Settings.getWidth()-m1;
+		double m2 = Settings.getWidth() - m1;
 		List<Line> lines = new ArrayList<>();
 		lines.add(new Line(m1, m1, m2, m1));
 		lines.add(new Line(m1, m2, m2, m2));
-		
+
 		lines.add(new Line(m1, m1, m1, m2));
 		lines.add(new Line(m2, m1, m2, m2));
-		
+
 		for (Line line : lines) {
 			line.setStroke(Settings.getLineColor());
 			line.setStrokeWidth(2);
 		}
-		
+
 		double d = (Settings.getWidth() - m1 * 2) / 9;
 		for (int y = 1; y < 9; y++) {
 
-			Line line = new Line(m1, m1+y*d, m2, m1+y*d);
+			Line line = new Line(m1, m1 + y * d, m2, m1 + y * d);
 			line.setStroke(Settings.getLineColor());
-			if (y%3 == 0) line.setStrokeWidth(2);
+			if (y % 3 == 0)
+				line.setStrokeWidth(2);
 			lines.add(line);
 		}
 		for (int x = 1; x < 9; x++) {
-			Line line = new Line(m1+x*d, m1, m1+x*d, m2);
+			Line line = new Line(m1 + x * d, m1, m1 + x * d, m2);
 			line.setStroke(Settings.getLineColor());
-			if (x%3 == 0) line.setStrokeWidth(2);
+			if (x % 3 == 0)
+				line.setStrokeWidth(2);
 			lines.add(line);
 		}
-		
-		this.setBackground(new Background(new BackgroundFill(Settings.getBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY)));
+
+		this.setBackground(
+				new Background(new BackgroundFill(Settings.getBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY)));
 		this.getChildren().addAll(lines);
-		
+
 		List<Text> texts = new ArrayList<>();
 		for (int x = 0; x < 9; x++)
 			for (int y = 0; y < 9; y++) {
-				double dx = m1+x*d;
-				double dy = m1+y*d;
+				double dx = m1 + x * d;
+				double dy = m1 + y * d;
 				if (cells[x][y].getValue() != 0) {
-					Text text = new Text(dx+12, dy+34, "" + cells[x][y].getValue());
+					Text text = new Text(dx + 12, dy + 34, "" + cells[x][y].getValue());
 					text.setFont(Font.font(35));
-					
+
 					if (cells[x][y].getValue() != highlighted && cells[x][y].getLocked())
 						text.setFill(Settings.getLockedNumberColor());
 					else if (cells[x][y].getValue() == highlighted && !cells[x][y].getLocked())
@@ -78,9 +81,9 @@ public class Board extends Pane {
 				} else {
 					List<Integer> tempValues = cells[x][y].getTempValues();
 					for (int n : tempValues) {
-						int tvX = (n-1) % 3;
-						int tvY = (int) ((n-1) / 3);
-						Text text = new Text(dx + tvX*d/3.7 + 4.5, dy + tvY*d/3.4 + 13, "" + n);
+						int tvX = (n - 1) % 3;
+						int tvY = (n - 1) / 3;
+						Text text = new Text(dx + tvX * d / 3.7 + 4.5, dy + tvY * d / 3.4 + 13, "" + n);
 						text.setFont(Font.font(13));
 						if (n == highlighted)
 							text.setFill(Settings.getHighlightedNumberColor());
@@ -92,23 +95,21 @@ public class Board extends Pane {
 			}
 		this.getChildren().addAll(texts);
 	}
-	
+
 	public void playAt(double mouseX, double mouseY, int n) {
-		int x = (int)(9*(mouseX - Settings.getMargin())/(Settings.getWidth()-2*Settings.getMargin()));
-		int y = (int)(9*(mouseY - Settings.getMargin())/(Settings.getWidth()-2*Settings.getMargin()));
-		if (	-1 < x && x < 9 &&
-				-1 < y && y < 9) {
+		int x = (int) (9 * (mouseX - Settings.getMargin()) / (Settings.getWidth() - 2 * Settings.getMargin()));
+		int y = (int) (9 * (mouseY - Settings.getMargin()) / (Settings.getWidth() - 2 * Settings.getMargin()));
+		if (-1 < x && x < 9 && -1 < y && y < 9) {
 			cells[x][y].setValue(n);
 			this.getChildren().clear();
 			drawThis();
 		}
 	}
-	
+
 	public void toggleTempValue(double mouseX, double mouseY, int n) {
-		int x = (int)(9*(mouseX - Settings.getMargin())/(Settings.getWidth()-2*Settings.getMargin()));
-		int y = (int)(9*(mouseY - Settings.getMargin())/(Settings.getWidth()-2*Settings.getMargin()));
-		if (	-1 < x && x < 9 &&
-				-1 < y && y < 9) {
+		int x = (int) (9 * (mouseX - Settings.getMargin()) / (Settings.getWidth() - 2 * Settings.getMargin()));
+		int y = (int) (9 * (mouseY - Settings.getMargin()) / (Settings.getWidth() - 2 * Settings.getMargin()));
+		if (-1 < x && x < 9 && -1 < y && y < 9) {
 			if (cells[x][y].getTempValues().contains(new Integer(n)))
 				cells[x][y].removeTempValue(new Integer(n));
 			else
@@ -117,7 +118,7 @@ public class Board extends Pane {
 			drawThis();
 		}
 	}
-	
+
 	public boolean isValid() {
 		// horizontal lines
 		for (int y = 0; y < 9; y++) {
@@ -133,7 +134,7 @@ public class Board extends Pane {
 				return false;
 			}
 		}
-			
+
 		// vertical lines:
 		for (int x = 0; x < 9; x++) {
 			List<Integer> col = new ArrayList<>();
@@ -148,15 +149,15 @@ public class Board extends Pane {
 				return false;
 			}
 		}
-		
+
 		// boxes
-		for (int dx = 0; dx < 9; dx+=3)
-			for (int dy = 0; dy < 9; dy+=3) {
+		for (int dx = 0; dx < 9; dx += 3)
+			for (int dy = 0; dy < 9; dy += 3) {
 				List<Integer> box = new ArrayList<>();
 				for (int x = 0; x < 3; x++)
 					for (int y = 0; y < 3; y++)
-						if (cells[dx+x][dy+y].getValue() != 0)
-							box.add(cells[dx+x][dy+y].getValue());
+						if (cells[dx + x][dy + y].getValue() != 0)
+							box.add(cells[dx + x][dy + y].getValue());
 				for (int i = 1; i < 10; i++)
 					if (box.contains(new Integer(i)))
 						box.remove(new Integer(i));
@@ -165,10 +166,10 @@ public class Board extends Pane {
 					return false;
 				}
 			}
-		
+
 		return true;
 	}
-	
+
 	public boolean isSolved() {
 		if (isValid()) {
 			for (int x = 0; x < 9; x++)
@@ -185,7 +186,7 @@ public class Board extends Pane {
 		this.getChildren().clear();
 		drawThis();
 	}
-	
+
 	public void clearHighlight() {
 		highlighted = 0;
 		this.getChildren().clear();

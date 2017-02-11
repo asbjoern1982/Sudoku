@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 public class SudokuMain extends Application {
 	private Controller controller = new Controller();
+
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
@@ -25,7 +26,7 @@ public class SudokuMain extends Application {
 		primaryStage.setScene(new Scene(root, 400, 485));
 		primaryStage.show();
 	}
-	
+
 	private void initContent(BorderPane root) {
 		controller.board = new Board();
 		controller.board.setOnMouseClicked(e -> controller.mouseClickedAction(e));
@@ -39,7 +40,8 @@ public class SudokuMain extends Application {
 		c.setToggleGroup(controller.group);
 		c.setUserData("value");
 		c.setOnAction(e -> controller.highlightAction(e));
-		pane.add(c, 0, 0);;
+		pane.add(c, 0, 0);
+		;
 		for (int n = 1; n <= 9; n++) {
 			ToggleButton b = new ToggleButton("" + n);
 			b.setToggleGroup(controller.group);
@@ -48,7 +50,7 @@ public class SudokuMain extends Application {
 			pane.add(b, n, 0);
 		}
 		root.setBottom(pane);
-		
+
 		for (int n = 1; n <= 9; n++) {
 			ToggleButton b = new ToggleButton("" + n);
 			b.setToggleGroup(controller.group);
@@ -57,17 +59,17 @@ public class SudokuMain extends Application {
 			pane.add(b, n, 1);
 		}
 	}
-	
+
 	private class Controller {
 		Board board;
 		ToggleGroup group;
-		
+
 		void mouseClickedAction(MouseEvent e) {
-			ToggleButton b = (ToggleButton)group.getSelectedToggle();
+			ToggleButton b = (ToggleButton) group.getSelectedToggle();
 			if (b != null) {
 				String s = b.getText();
 				int n = s.equals("c") ? 0 : Integer.parseInt(s);
-				
+
 				if (b.getUserData().equals("value")) {
 					board.playAt(e.getX(), e.getY(), n);
 					if (board.isSolved())
@@ -77,7 +79,7 @@ public class SudokuMain extends Application {
 				}
 			}
 		}
-		
+
 		void highlightAction(ActionEvent e) {
 			ToggleButton b = (ToggleButton) e.getSource();
 			if (!b.getText().equals("c")) {

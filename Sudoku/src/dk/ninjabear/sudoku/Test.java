@@ -16,7 +16,7 @@ public class Test {
 				{0,0,4,  0,0,0,  3,0,0},
 				{2,0,1,  0,5,0,  6,0,7}
 		};
-		
+
 		for (int x = 0; x < 9; x++)
 			for (int y = 0; y < 9; y++)
 				if (sudoku[x][y] != 0) {
