@@ -67,7 +67,7 @@ public class Board extends Pane {
 					text.setFont(Font.font(35));
 					
 					if (cells[x][y].getValue() != highlighted && cells[x][y].getLocked())
-						text.setFill(Settings.getLocledNumberColor());
+						text.setFill(Settings.getLockedNumberColor());
 					else if (cells[x][y].getValue() == highlighted && !cells[x][y].getLocked())
 						text.setFill(Settings.getHighlightedNumberColor());
 					else if (cells[x][y].getValue() == highlighted && cells[x][y].getLocked())
