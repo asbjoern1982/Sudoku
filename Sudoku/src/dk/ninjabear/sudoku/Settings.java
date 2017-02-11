@@ -23,60 +23,22 @@ public class Settings {
 	private static Color highlightedNumberColor;
 	private static Color highlightedLocledNumberColor;
 
-	public static double getWidth() {
-		if (load)
-			load();
-		return width;
-	}
-
-	public static double getMargin() {
-		if (load)
-			load();
-		return margin;
-	}
-
-	public static Color getBackgroundColor() {
-		if (load)
-			load();
-		return backgroundColor;
-	}
-
-	public static Color getLineColor() {
-		if (load)
-			load();
-		return lineColor;
-	}
-
-	public static Color getNumberColor() {
-		if (load)
-			load();
-		return numberColor;
-	}
-
-	public static Color getLockedNumberColor() {
-		if (load)
-			load();
-		return lockedNumberColor;
-	}
-
-	public static Color getHighlightedNumberColor() {
-		if (load)
-			load();
-		return highlightedNumberColor;
-	}
-
-	public static Color getHighlightedLocledNumberColor() {
-		if (load)
-			load();
-		return highlightedLocledNumberColor;
-	}
-
+	public static double getWidth() {if (load) load(); return width;}
+	public static double getMargin() {if (load) load(); return margin;}
+	public static Color getBackgroundColor() {if (load) load(); return backgroundColor;}
+	public static Color getLineColor() {if (load) load(); return lineColor;}
+	public static Color getNumberColor() {if (load) load(); return numberColor;}
+	public static Color getLockedNumberColor() {if (load) load(); return lockedNumberColor;}
+	public static Color getHighlightedNumberColor() {if (load) load(); return highlightedNumberColor;}
+	public static Color getHighlightedLocledNumberColor() {if (load) load(); return highlightedLocledNumberColor;}
+	
 	private static boolean load = true;
-
+	
 	private static void load() {
-
 		try {
-			String jsonString = Files.readAllLines(Paths.get(FILENAME)).stream().collect(Collectors.joining("\n"));
+			String jsonString = Files.readAllLines(Paths.get(FILENAME))
+					.stream()
+					.collect(Collectors.joining("\n"));
 
 			JSONObject obj = new JSONObject(jsonString);
 			width = obj.getDouble("width");
@@ -118,11 +80,10 @@ public class Settings {
 			obj.put("highlightedNumberColor", highlightedNumberColor);
 			obj.put("highlightedLocledNumberColor", highlightedLocledNumberColor);
 			obj.write(file);
-			System.out.println("Settings written to " + FILENAME);
 		} catch (JSONException e) {
-			System.out.println(e);
+			System.err.println(e);
 		} catch (IOException e) {
-			System.out.println(e);
+			System.err.println(e);
 		}
 	}
 }
