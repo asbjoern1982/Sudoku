@@ -13,18 +13,30 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class Board extends Pane {
-	private Cell[][] cells = new Cell[9][9];
+	private Cell[][] cells;
 	private int highlighted = 0;
 
 	public Board() {
-		for (int x = 0; x < 9; x++)
-			for (int y = 0; y < 9; y++)
-				cells[x][y] = new Cell(x, y);
-		Test.initTestData(cells);
+		initData();
 		drawThis();
 	}
+	
+	private void initData() {
+		List<Cell[][]> list = SudokuStorage.getSudokus();
+		if (list.isEmpty()) {
+			cells = new Cell[9][9];
+			for (int x = 0; x < 9; x++)
+				for (int y = 0; y < 9; y++)
+					cells[x][y] = new Cell(x, y);
+		} else {
+			cells = new Cell[9][9];
+			for (int x = 0; x < 9; x++)
+				for (int y = 0; y < 9; y++)
+					cells[x][y] = new Cell(x, y, list.get(0)[x][y].getValue());
+		}
+	}
 
-	public void drawThis() {
+	private void drawThis() {
 		double m1 = Settings.getMargin();
 		double m2 = Settings.getWidth() - m1;
 		List<Line> lines = new ArrayList<>();
@@ -56,8 +68,7 @@ public class Board extends Pane {
 			lines.add(line);
 		}
 
-		this.setBackground(
-				new Background(new BackgroundFill(Settings.getBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY)));
+		this.setBackground(new Background(new BackgroundFill(Settings.getBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY)));
 		this.getChildren().addAll(lines);
 
 		List<Text> texts = new ArrayList<>();
@@ -190,6 +201,12 @@ public class Board extends Pane {
 	public void clearHighlight() {
 		highlighted = 0;
 		this.getChildren().clear();
+		drawThis();
+	}
+
+	public void reset() {
+		getChildren().clear();
+		initData();
 		drawThis();
 	}
 }

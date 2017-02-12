@@ -5,8 +5,8 @@ import java.util.List;
 public class Test {
 	
 	public static void main(String[] args) {
-		//storeTestData();
-		readTestData();
+		storeTestData();
+		//readTestData();
 	}
 	
 	public static void storeTestData() {

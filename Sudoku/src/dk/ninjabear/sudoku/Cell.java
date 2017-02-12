@@ -18,7 +18,8 @@ public class Cell {
 		this.x = x;
 		this.y = y;
 		this.value = value;
-		locked = true;
+		if (value != 0)
+			locked = true;
 	}
 
 	public int getX() {

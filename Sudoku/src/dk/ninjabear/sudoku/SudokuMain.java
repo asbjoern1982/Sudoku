@@ -4,6 +4,9 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
@@ -23,11 +26,20 @@ public class SudokuMain extends Application {
 		primaryStage.setTitle("Sudoku");
 		BorderPane root = new BorderPane();
 		initContent(root);
-		primaryStage.setScene(new Scene(root, 400, 485));
+		primaryStage.setScene(new Scene(root, 400, 510));
 		primaryStage.show();
 	}
 
 	private void initContent(BorderPane root) {
+		MenuItem resetMenu = new MenuItem("reset Sudoku");
+		resetMenu.setOnAction(e->controller.resetAction());
+		MenuItem selectMenu = new MenuItem("Select Sudoku");
+		selectMenu.setOnAction(e->controller.selectAction());
+		Menu gameMenu = new Menu("Game");
+		gameMenu.getItems().addAll(resetMenu, selectMenu);
+		root.setTop(new MenuBar(gameMenu));
+		
+		
 		controller.board = new Board();
 		controller.board.setOnMouseClicked(e -> controller.mouseClickedAction(e));
 		root.setCenter(controller.board);
@@ -63,6 +75,20 @@ public class SudokuMain extends Application {
 	private class Controller {
 		Board board;
 		ToggleGroup group;
+		SelectDialog dialog;
+		
+		void resetAction() {
+			board.reset();
+		}
+		
+		void selectAction() {
+			if (dialog == null) {
+				dialog = new SelectDialog();
+			} else
+				dialog.reset();
+			dialog.initOwner(board.getScene().getWindow());
+			dialog.showAndWait();
+		}
 
 		void mouseClickedAction(MouseEvent e) {
 			ToggleButton b = (ToggleButton) group.getSelectedToggle();
