@@ -13,6 +13,13 @@ public class Cell {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public Cell(int x, int y, int value) {
+		this.x = x;
+		this.y = y;
+		this.value = value;
+		locked = true;
+	}
 
 	public int getX() {
 		return x;
