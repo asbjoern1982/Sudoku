@@ -11,6 +11,10 @@ import org.json.JSONObject;
 
 import javafx.scene.paint.Color;
 
+/**
+ * Used http://www.java2s.com/Code/Jar/j/Downloadjavajsonjar.htm for json.
+ * @author Asbjørn
+ */
 public class Settings {
 	public static final String FILENAME = "settings.json";
 
