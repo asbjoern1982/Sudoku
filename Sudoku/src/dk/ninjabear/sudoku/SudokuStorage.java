@@ -23,6 +23,11 @@ public class SudokuStorage {
 		store();
 	}
 	
+	public static void removeSudoku(Cell[][] sudoku) {
+		sudokuList.remove(sudoku);
+		store();
+	}
+	
 	private static void load() {
 		try {
 			String jsonString = Files.readAllLines(Paths.get(FILENAME))
@@ -42,6 +47,8 @@ public class SudokuStorage {
 	}
 	
 	private static void store() {
+		if (load)
+			load();
 		try (FileWriter file = new FileWriter(FILENAME)) {
 			JSONArray root = new JSONArray();
 			for (Cell[][] sudoku : sudokuList) {

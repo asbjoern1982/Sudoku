@@ -31,7 +31,7 @@ public class SudokuMain extends Application {
 	}
 
 	private void initContent(BorderPane root) {
-		MenuItem resetMenu = new MenuItem("reset Sudoku");
+		MenuItem resetMenu = new MenuItem("Reset Sudoku");
 		resetMenu.setOnAction(e->controller.resetAction());
 		MenuItem selectMenu = new MenuItem("Select Sudoku");
 		selectMenu.setOnAction(e->controller.selectAction());
@@ -43,6 +43,7 @@ public class SudokuMain extends Application {
 		controller.board = new Board();
 		controller.board.setOnMouseClicked(e -> controller.mouseClickedAction(e));
 		root.setCenter(controller.board);
+		
 		GridPane pane = new GridPane();
 		pane.setPadding(new Insets(15));
 		pane.setHgap(11);
@@ -84,10 +85,14 @@ public class SudokuMain extends Application {
 		void selectAction() {
 			if (dialog == null) {
 				dialog = new SelectDialog();
+				dialog.initOwner(board.getScene().getWindow());
 			} else
 				dialog.reset();
-			dialog.initOwner(board.getScene().getWindow());
 			dialog.showAndWait();
+			
+			if (dialog.getResult() != null) {
+				board.setData(dialog.getResult());
+			}
 		}
 
 		void mouseClickedAction(MouseEvent e) {

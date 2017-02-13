@@ -13,29 +13,39 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class Board extends Pane {
-	private Cell[][] cells;
+	private Cell[][] startData;
+	private Cell[][] data;
 	private int highlighted = 0;
 
 	public Board() {
+		List<Cell[][]> list = SudokuStorage.getSudokus();
+		if (list.isEmpty()) {
+			startData = new Cell[9][9];
+			for (int x = 0; x < 9; x++)
+				for (int y = 0; y < 9; y++)
+					startData[x][y] = new Cell(x, y);
+		} else {
+			startData = new Cell[9][9];
+			for (int x = 0; x < 9; x++)
+				for (int y = 0; y < 9; y++)
+					startData[x][y] = new Cell(x, y, list.get(0)[x][y].getValue());
+		}
 		initData();
 		drawThis();
 	}
+
+	public void setData(Cell[][] data) {
+		startData = data;
+		reset();
+	}
 	
 	private void initData() {
-		List<Cell[][]> list = SudokuStorage.getSudokus();
-		if (list.isEmpty()) {
-			cells = new Cell[9][9];
-			for (int x = 0; x < 9; x++)
-				for (int y = 0; y < 9; y++)
-					cells[x][y] = new Cell(x, y);
-		} else {
-			cells = new Cell[9][9];
-			for (int x = 0; x < 9; x++)
-				for (int y = 0; y < 9; y++)
-					cells[x][y] = new Cell(x, y, list.get(0)[x][y].getValue());
-		}
+		data = new Cell[9][9];
+		for (int x = 0; x < 9; x++)
+			for (int y = 0; y < 9; y++)
+				data[x][y] = new Cell(x, y, startData[x][y].getValue());
 	}
-
+	
 	private void drawThis() {
 		double m1 = Settings.getMargin();
 		double m2 = Settings.getWidth() - m1;
@@ -76,21 +86,21 @@ public class Board extends Pane {
 			for (int y = 0; y < 9; y++) {
 				double dx = m1 + x * d;
 				double dy = m1 + y * d;
-				if (cells[x][y].getValue() != 0) {
-					Text text = new Text(dx + 12, dy + 34, "" + cells[x][y].getValue());
+				if (data[x][y].getValue() != 0) {
+					Text text = new Text(dx + 12, dy + 34, "" + data[x][y].getValue());
 					text.setFont(Font.font(35));
 
-					if (cells[x][y].getValue() != highlighted && cells[x][y].getLocked())
+					if (data[x][y].getValue() != highlighted && data[x][y].getLocked())
 						text.setFill(Settings.getLockedNumberColor());
-					else if (cells[x][y].getValue() == highlighted && !cells[x][y].getLocked())
+					else if (data[x][y].getValue() == highlighted && !data[x][y].getLocked())
 						text.setFill(Settings.getHighlightedNumberColor());
-					else if (cells[x][y].getValue() == highlighted && cells[x][y].getLocked())
+					else if (data[x][y].getValue() == highlighted && data[x][y].getLocked())
 						text.setFill(Settings.getHighlightedLocledNumberColor());
 					else
 						text.setFill(Settings.getNumberColor());
 					texts.add(text);
 				} else {
-					List<Integer> tempValues = cells[x][y].getTempValues();
+					List<Integer> tempValues = data[x][y].getTempValues();
 					for (int n : tempValues) {
 						int tvX = (n - 1) % 3;
 						int tvY = (n - 1) / 3;
@@ -111,7 +121,7 @@ public class Board extends Pane {
 		int x = (int) (9 * (mouseX - Settings.getMargin()) / (Settings.getWidth() - 2 * Settings.getMargin()));
 		int y = (int) (9 * (mouseY - Settings.getMargin()) / (Settings.getWidth() - 2 * Settings.getMargin()));
 		if (-1 < x && x < 9 && -1 < y && y < 9) {
-			cells[x][y].setValue(n);
+			data[x][y].setValue(n);
 			this.getChildren().clear();
 			drawThis();
 		}
@@ -121,10 +131,10 @@ public class Board extends Pane {
 		int x = (int) (9 * (mouseX - Settings.getMargin()) / (Settings.getWidth() - 2 * Settings.getMargin()));
 		int y = (int) (9 * (mouseY - Settings.getMargin()) / (Settings.getWidth() - 2 * Settings.getMargin()));
 		if (-1 < x && x < 9 && -1 < y && y < 9) {
-			if (cells[x][y].getTempValues().contains(new Integer(n)))
-				cells[x][y].removeTempValue(new Integer(n));
+			if (data[x][y].getTempValues().contains(new Integer(n)))
+				data[x][y].removeTempValue(new Integer(n));
 			else
-				cells[x][y].addTempValue(new Integer(n));
+				data[x][y].addTempValue(new Integer(n));
 			this.getChildren().clear();
 			drawThis();
 		}
@@ -135,8 +145,8 @@ public class Board extends Pane {
 		for (int y = 0; y < 9; y++) {
 			List<Integer> row = new ArrayList<>();
 			for (int x = 0; x < 9; x++)
-				if (cells[x][y].getValue() != 0)
-					row.add(cells[x][y].getValue());
+				if (data[x][y].getValue() != 0)
+					row.add(data[x][y].getValue());
 			for (int i = 1; i < 10; i++)
 				if (row.contains(new Integer(i)))
 					row.remove(new Integer(i));
@@ -150,8 +160,8 @@ public class Board extends Pane {
 		for (int x = 0; x < 9; x++) {
 			List<Integer> col = new ArrayList<>();
 			for (int y = 0; y < 9; y++)
-				if (cells[x][y].getValue() != 0)
-					col.add(cells[x][y].getValue());
+				if (data[x][y].getValue() != 0)
+					col.add(data[x][y].getValue());
 			for (int i = 1; i < 10; i++)
 				if (col.contains(new Integer(i)))
 					col.remove(new Integer(i));
@@ -167,8 +177,8 @@ public class Board extends Pane {
 				List<Integer> box = new ArrayList<>();
 				for (int x = 0; x < 3; x++)
 					for (int y = 0; y < 3; y++)
-						if (cells[dx + x][dy + y].getValue() != 0)
-							box.add(cells[dx + x][dy + y].getValue());
+						if (data[dx + x][dy + y].getValue() != 0)
+							box.add(data[dx + x][dy + y].getValue());
 				for (int i = 1; i < 10; i++)
 					if (box.contains(new Integer(i)))
 						box.remove(new Integer(i));
@@ -185,7 +195,7 @@ public class Board extends Pane {
 		if (isValid()) {
 			for (int x = 0; x < 9; x++)
 				for (int y = 0; y < 9; y++)
-					if (cells[x][y].getValue() == 0)
+					if (data[x][y].getValue() == 0)
 						return false;
 			return true;
 		}
