@@ -15,7 +15,6 @@ public class Test extends Application {
 		Application.launch(args);;
 	}
 	
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("test!");
@@ -23,6 +22,7 @@ public class Test extends Application {
 		button.setOnAction(e -> addDialogTest(primaryStage));
 		primaryStage.setScene(new Scene(button));
 		primaryStage.show();
+		addDialogTest(primaryStage);
 	}
 	
 	static void addDialogTest(Stage primaryStage) {
@@ -30,8 +30,8 @@ public class Test extends Application {
 		dialog.initOwner(primaryStage);
 		dialog.showAndWait();
 		Cell[][] out = dialog.getResult();
-		if (out == null) System.out.println("null");
-		else printData(out);
+		if (out != null) printData(out);
+		System.exit(-1);
 	}
 	
 	public static void storeTestData() {
