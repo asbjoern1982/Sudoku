@@ -26,7 +26,7 @@ public class SelectDialog extends Stage {
 		setTitle("Select Sudoku");
 		BorderPane borderPane = new BorderPane();
 		initContent(borderPane);
-		setScene(new Scene(borderPane));
+		setScene(new Scene(borderPane, 365, 300));
 	}
 	
 	private final GridPane pane = new GridPane();
@@ -69,6 +69,8 @@ public class SelectDialog extends Stage {
 		AddSudokuDialog addDialog;
 		
 		public void updateControls() {
+			sudokuList.clear();
+			pane.getChildren().clear();
 			List<Cell[][]> cells = SudokuStorage.getSudokus();
 			int counter = 0;
 			for (Cell[][] cell : cells) {
@@ -94,6 +96,7 @@ public class SelectDialog extends Stage {
 			result = null;
 			for (MiniSudoku sudoku : sudokuList)
 				sudoku.setSelected(false);
+			updateControls();
 		}
 		
 		public void addAction() {
@@ -123,7 +126,7 @@ public class SelectDialog extends Stage {
 				for (MiniSudoku sudoku : sudokuList)
 					if (sudoku.isSelected()) {
 						SudokuStorage.removeSudoku(sudoku.getData());
-						updateControls();
+						reset();
 						break; //TODO does not work??
 					}
 			}

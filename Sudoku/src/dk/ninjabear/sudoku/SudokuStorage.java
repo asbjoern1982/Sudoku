@@ -24,6 +24,7 @@ public class SudokuStorage {
 	}
 	
 	public static void removeSudoku(Cell[][] sudoku) {
+		System.out.println("remove: list contains it " + sudokuList.contains(sudoku));
 		sudokuList.remove(sudoku);
 		store();
 	}
